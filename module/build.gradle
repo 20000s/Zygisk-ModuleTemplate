@@ -1,6 +1,8 @@
 import org.apache.tools.ant.filters.FixCrLfFilter
 import org.apache.tools.ant.filters.ReplaceTokens
 
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.security.MessageDigest
 
 plugins {
@@ -26,7 +28,7 @@ android {
     externalNativeBuild {
         cmake {
             path "src/main/cpp/CMakeLists.txt"
-            version "3.20.3"
+            version "3.22.1"
         }
     }
     ndkVersion '23.1.7779620'
@@ -66,16 +68,14 @@ afterEvaluate {
                 into 'lib'
             }
             doLast {
-                fileTree("$magiskDir").visit { f ->
-                    if (f.directory) return
-                    if (f.file.name == '.gitattributes') return
-
-                    def md = MessageDigest.getInstance("SHA-256")
-                    f.file.eachByte 4096, { bytes, size ->
-                        md.update(bytes, 0, size)
-                    }
-                    file(f.file.path + ".sha256sum").text = md.digest().encodeHex()
+                file("$magiskDir/zygisk").mkdir()
+                fileTree("$magiskDir/lib").visit { f ->
+                    if (!f.directory) return
+                    def srcPath = Paths.get("${f.file.absolutePath}/lib${moduleLibraryName}.so")
+                    def dstPath = Paths.get("$magiskDir/zygisk/${f.path}.so")
+                    Files.move(srcPath, dstPath)
                 }
+                new File("$magiskDir/lib").deleteDir()
             }
         }
 

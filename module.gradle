@@ -10,10 +10,10 @@ ext {
        Note, the older version of the template uses '-' instead of '_', if your are upgrading from
        the older version, please pay attention.
     */
-    magiskModuleId = "zygisk_shocker"
+    magiskModuleId = "zygisk_20000s"
 
-    moduleName = "zygisk_shocker"
-    moduleAuthor = "Shocker"
+    moduleName = "zygisk_20000s"
+    moduleAuthor = "20000s"
     moduleDescription = "test"
     moduleVersion = "v1.0.0"
     moduleVersionCode = 26
